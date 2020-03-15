@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask
 from flask import render_template, g
 PATH = 'db/jobs.sqlite'
+EMPLOYEES_QUERY = 'SELECT job.id, job.title, job.description, job.salary, employer.id as employer_id, employer.name as employer_name FROM job JOIN employer ON employer.id = job.employer_id'
 
 app = Flask(__name__)
 
@@ -35,8 +36,5 @@ def close_connection(exception):
 @app.route('/')
 @app.route('/jobs')
 def jobs():
-    jobs = execute_sql('SELECT job.id, job.title, job.description, job.salary, employer.id as employer_id,' +
-                       'employer.name as employer_name' +
-                       ' FROM job JOIN employer ON employer.id = job.employer_id')
+    jobs = execute_sql(EMPLOYEES_QUERY)
     return render_template('index.html', jobs=jobs)
-
